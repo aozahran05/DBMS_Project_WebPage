@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Cafe Management System - Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices:
+        - Intro/Scenario: Text (HTML/Tailwind). Goal: Inform.
+        - EER/Mapping: Textual description, HTML/Tailwind for schema tables/cards, and now includes images. Goal: Organize/Inform.
+        - SQL (All types): Code blocks (HTML/Tailwind `pre`/`code`). Goal: Inform/Demonstrate.
+        - SQL (Payments > Avg Query): Added Chart.js bar chart with static sample data to illustrate. Goal: Enhance understanding.
+        - Normalization: Text (HTML/Tailwind). Goal: Inform.
+        - Team: Text list (HTML/Tailwind). Goal: Inform.
+        All textual content is extracted and adapted from the source document. SQL code is directly used.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5; /* Warm Neutral: Light Beige/Cream */
+            color: #333; /* Dark Gray for text */
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom-width: 4px;
+            border-color: transparent;
+        }
+        .tab-button.active {
+            border-color: #4fd1c5; /* Muted Teal Accent */
+            color: #2c7a7b; /* Darker Teal for active text */
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #2D3748; /* Slightly darker gray for main headings */
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #4A5568; /* Medium gray for subheadings */
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        p, li {
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        pre {
+            background-color: #2d3748; /* Dark background for code */
+            color: #f7fafc; /* Light text for code */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            margin-bottom: 1rem;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .table-like {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .table-like strong {
+            color: #2c7a7b; /* Muted Teal for table names */
+        }
+        .entity-card {
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .entity-card h4 {
+            color: #2c7a7b;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width for chart readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 350px; /* Max height */
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .diagram-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1.5rem auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="bg-gray-800 text-white p-6 shadow-md">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold">Internet Cafe Management System</h1>
+            <p class="text-sm text-gray-300">An Interactive Report based on the project by Abdel-Rahman Zahran, Mohammad Alashary, Mustafa Yousef</p>
+        </div>
+    </header>
+
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto flex justify-center space-x-2 sm:space-x-4 md:space-x-8 py-3 px-2">
+            <button class="tab-button active text-sm sm:text-base px-3 py-2" onclick="showTab('overview')">Overview</button>
+            <button class="tab-button text-sm sm:text-base px-3 py-2" onclick="showTab('dbdesign')">Database Design</button>
+            <button class="tab-button text-sm sm:text-base px-3 py-2" onclick="showTab('implementation')">Implementation</button>
+            <button class="tab-button text-sm sm:text-base px-3 py-2" onclick="showTab('normalization')">Normalization</button>
+            <button class="tab-button text-sm sm:text-base px-3 py-2" onclick="showTab('team')">Team & Credits</button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 sm:p-6 md:p-8">
+        <div id="overview" class="tab-content active">
+            <h2>Project Overview</h2>
+            <p>This section outlines the problem statement that initiated the Internet Cafe Management System project and the proposed solution. It aims to provide context for the system's development and its intended benefits for the internet café manager.</p>
+            
+            <h3>Introduction</h3>
+            <p>An internet café manager requested assistance in building a system that is easy to work with and helps reduce paper usage. The primary goal was to streamline operations and move towards a more digital management approach.</p>
+
+            <h3>Scenario Overview</h3>
+            <p>The system manages several key entities and their interactions within the internet cafe environment:</p>
+            <ul>
+                <li><strong>Customer:</strong> Creates an account (username, password, full name, phone, email) and makes payments.</li>
+                <li><strong>Payment:</strong> Managed by a Registrar, includes method, amount, ID, and date. The registrar also allocates computer usage hours based on payment.</li>
+                <li><strong>Registrar:</strong> An employee role responsible for managing payments and customer computer time.</li>
+                <li><strong>Service:</strong> Customers can order services (e.g., snacks, drinks), which have an ID, name, description, and price. These are prepared by an Attendant.</li>
+                <li><strong>Attendant:</strong> An employee role responsible for preparing and delivering services.</li>
+                <li><strong>Computer:</strong> Customers use specific computers. Each computer has a unique number, an hourly rate based on its specifications (e.g., for research or gaming), and a status (e.g., available, in use).</li>
+                <li><strong>Feedback:</strong> After using a computer or a service, customers can provide feedback. Feedback includes an ID, content, and status (e.g., open, resolved) and is handled by a Manager.</li>
+                <li><strong>Manager:</strong> An employee role responsible for solving customer feedback and overseeing general operations.</li>
+                <li><strong>Employee:</strong> A general category for Managers, Registrars, and Attendants. All employees have an ID, full name, birth date, address, and salary, with specific qualifications for each role:
+                    <ul>
+                        <li>Manager: At least 8 years of experience in problem-solving and business management.</li>
+                        <li>Registrar: Good communication skills, preferably certified.</li>
+                        <li>Attendant: Cooking or barista degree.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>This scenario forms the basis for the database design and system functionalities detailed in subsequent sections.</p>
+        </div>
+
+        <div id="dbdesign" class="tab-content">
+            <h2>Database Design</h2>
+            <p>This section delves into the structural design of the database. It includes insights from the Entity-Relationship Diagram (EER) and a detailed mapping to the relational schema, showing how real-world entities and their relationships are translated into database tables and columns. Understanding this design is crucial for comprehending data storage and retrieval within the system.</p>
+
+            <h3>EER Diagram Insights</h3>
+            <p>The EER (Enhanced Entity-Relationship) Diagram visually represents the main entities in the system and how they relate to one another. Below is the EER diagram for the Internet Cafe Management System.</p>
+            <img src="DBMS ff.jpg" alt="EER Diagram for Internet Cafe Management System" class="diagram-image" onerror="this.onerror=null; this.src='https://placehold.co/600x400/cccccc/333333?text=EER+Diagram+Placeholder';">
+            <ul>
+                <li><strong>Entities:</strong> Customer, Employee (specialized into Manager, Registrar, Attendant), Payment, Service, Computer, Feedback.</li>
+                <li><strong>Relationships:</strong>
+                    <ul>
+                        <li>A Customer `makes` a Payment (managed by Registrar).</li>
+                        <li>A Customer `uses` a Computer.</li>
+                        <li>A Customer `orders` a Service (prepared by Attendant).</li>
+                        <li>A Customer `gives` Feedback (solved by Manager).</li>
+                        <li>Payment `is managed by` Registrar.</li>
+                        <li>Service `is prepared by` Attendant.</li>
+                        <li>Feedback `is solved by` Manager.</li>
+                    </ul>
+                </li>
+                <li>Key attributes for each entity define their properties (e.g., Customer has UserName, Email; Computer has HourlyRate, Status).</li>
+            </ul>
+             <p>The following cards represent a simplified view of the main entities and their attributes as per the mapping information:</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                <div class="entity-card">
+                    <h4>Customer</h4>
+                    <p>CustomerID, UserName, Firstname, Lastname, Email, Hours</p>
+                </div>
+                <div class="entity-card">
+                    <h4>Payment</h4>
+                    <p>PaymentID, CustomerID, EmployeeID (Registrar), PaymentMethod, AmountPaid, PaymentDate</p>
+                </div>
+                <div class="entity-card">
+                    <h4>Service</h4>
+                    <p>ServiceID, CustomerID, EmployeeID (Attendant), Description, ServiceName, ServicePrice</p>
+                </div>
+                <div class="entity-card">
+                    <h4>Computer</h4>
+                    <p>PCNumber, Status, HourlyRate, GamingFlag, Games, ResearchFlag, ResearchPrograms</p>
+                </div>
+                <div classs="entity-card">
+                    <h4>Employee (General)</h4>
+                     <p>EmployeeID, Firstname, Lastname, BirthDate, Address, Salary. Specialized attributes exist for Manager (Experience), Registrar (Communication_Skills), Attendant (Cooking_Degree).</p>
+                </div>
+                 <div class="entity-card">
+                    <h4>Feedback</h4>
+                    <p>FeedbackID, CustomerID, EmployeeID (Manager), Content, Status</p>
+                </div>
+            </div>
+
+
+            <h3>Relational Schema (Mapping)</h3>
+            <p>The EER diagram is mapped to a relational schema consisting of the following tables. This structure defines how data is organized in the SQL database. Below is the mapping from the EER to the relational schema.</p>
+            <img src="Mapping ff.png" alt="Relational Schema Mapping" class="diagram-image" onerror="this.onerror=null; this.src='https://placehold.co/600x400/cccccc/333333?text=Mapping+Diagram+Placeholder';">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="table-like">
+                    <strong>Customer</strong>
+                    <ul>
+                        <li><code>CustomerID</code> (PK)</li>
+                        <li><code>UserName</code></li>
+                        <li><code>Firstname</code></li>
+                        <li><code>Lastname</code></li>
+                        <li><code>Email</code></li>
+                        <li><code>Hours</code></li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>CustomersPhoneNumbers</strong>
+                    <ul>
+                        <li><code>CustomerID</code> (PK, FK referencing Customer)</li>
+                        <li><code>PhoneNumber</code> (PK)</li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>Feedback</strong>
+                    <ul>
+                        <li><code>FeedbackID</code> (PK)</li>
+                        <li><code>CustomerID</code> (FK referencing Customer)</li>
+                        <li><code>EmployeeID</code> (FK referencing Manager)</li>
+                        <li><code>Content</code></li>
+                        <li><code>Status</code></li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>Payment</strong>
+                    <ul>
+                        <li><code>PaymentID</code> (PK)</li>
+                        <li><code>CustomerID</code> (FK referencing Customer)</li>
+                        <li><code>EmployeeID</code> (FK referencing Registrar)</li>
+                        <li><code>PaymentMethod</code></li>
+                        <li><code>AmountPaid</code></li>
+                        <li><code>PaymentDate</code></li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>Registrar</strong> (Specialization of Employee)
+                    <ul>
+                        <li><code>EmployeeID</code> (PK, FK referencing a potential base Employee table if fully modeled)</li>
+                        <li><code>Firstname</code></li>
+                        <li><code>Lastname</code></li>
+                        <li><code>BirthDate</code></li>
+                        <li><code>Address</code></li>
+                        <li><code>Salary</code></li>
+                        <li><code>Communication_Skills</code></li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>Manager</strong> (Specialization of Employee)
+                    <ul>
+                        <li><code>EmployeeID</code> (PK, FK referencing Employee)</li>
+                        <li><code>Firstname</code></li>
+                        <li><code>Lastname</code></li>
+                        <li><code>BirthDate</code></li>
+                        <li><code>Address</code></li>
+                        <li><code>Salary</code></li>
+                        <li><code>Experience</code></li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>Attendant</strong> (Specialization of Employee)
+                    <ul>
+                        <li><code>EmployeeID</code> (PK, FK referencing Employee)</li>
+                        <li><code>Firstname</code></li>
+                        <li><code>Lastname</code></li>
+                        <li><code>BirthDate</code></li>
+                        <li><code>Address</code></li>
+                        <li><code>Salary</code></li>
+                        <li><code>Cooking_Degree</code></li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>Service</strong>
+                    <ul>
+                        <li><code>ServiceID</code> (PK)</li>
+                        <li><code>CustomerID</code> (FK referencing Customer)</li>
+                        <li><code>EmployeeID</code> (FK referencing Attendant)</li>
+                        <li><code>Description</code></li>
+                        <li><code>ServiceName</code></li>
+                        <li><code>ServicePrice</code></li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>Computer</strong>
+                    <ul>
+                        <li><code>PCnumber</code> (PK)</li>
+                        <li><code>Status</code></li>
+                        <li><code>HourlyRate</code></li>
+                        <li><code>GamingFlag</code> (BIT)</li>
+                        <li><code>Games</code> (TEXT)</li>
+                        <li><code>ResearchFlag</code> (BIT)</li>
+                        <li><code>ResearchPrograms</code> (TEXT)</li>
+                    </ul>
+                </div>
+                <div class="table-like">
+                    <strong>Use_relationship</strong> (Associative entity for M:N between Customer and Computer)
+                    <ul>
+                        <li><code>CustomerID</code> (PK, FK referencing Customer)</li>
+                        <li><code>PCnumber</code> (PK, FK referencing Computer)</li>
+                        <li><code>UsageHours</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="implementation" class="tab-content">
+            <h2>SQL Implementation</h2>
+            <p>This section showcases the SQL (Structured Query Language) aspects of the project. It includes the commands for creating the database tables, inserting initial data, making necessary updates or corrections to the schema, and examples of complex queries like triggers and aggregations that add advanced functionality to the system. These SQL snippets demonstrate the practical realization of the database design.</p>
+
+            <div class="accordion">
+                <button class="accordion-button" onclick="toggleAccordion(this)">SQL: Tables Creation</button>
+                <div class="accordion-content">
+                    <h3>SQL: Tables Creation</h3>
+                    <p>The following SQL statements define the structure of each table in the database, including primary keys, foreign keys, and data types for each column.</p>
+                    <pre>
+CREATE TABLE Customer (
+    CustomerID INT PRIMARY KEY,
+    Username VARCHAR(50),
+    Firstname VARCHAR(20),
+    Lastname VARCHAR(20),
+    Email VARCHAR(100),
+    Hours INT
+);
+
+CREATE TABLE Registrar (
+    EmployeeID INT PRIMARY KEY,
+    Firstname VARCHAR(20),
+    Lastname VARCHAR(20),
+    BirthDate DATE,
+    Address VARCHAR(100),
+    Salary DECIMAL(10, 2),
+    Communication_Skills VARCHAR(100)
+);
+
+CREATE TABLE Payment (
+    PaymentID INT PRIMARY KEY,
+    CustomerID INT,
+    EmployeeID INT,
+    PaymentMethod VARCHAR(4),
+    AmountPaid DECIMAL(10, 2),
+    PaymentDate DATE,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (EmployeeID) REFERENCES Registrar(EmployeeID)
+);
+
+CREATE TABLE Manager (
+    EmployeeID INT PRIMARY KEY,
+    Firstname VARCHAR(20),
+    Lastname VARCHAR(20),
+    BirthDate DATE,
+    Address VARCHAR(100),
+    Salary DECIMAL(10, 2),
+    Experience INT
+);
+
+CREATE TABLE Feedback (
+    FeedbackID INT PRIMARY KEY,
+    CustomerID INT,
+    EmployeeID INT,
+    Content TEXT,
+    Status VARCHAR(20),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (EmployeeID) REFERENCES Manager(EmployeeID)
+);
+
+CREATE TABLE Attendant (
+    EmployeeID INT PRIMARY KEY,
+    Firstname VARCHAR(20),
+    Lastname VARCHAR(20),
+    BirthDate DATE,
+    Address VARCHAR(100),
+    Salary DECIMAL(10, 2),
+    Cooking_Degree VARCHAR(50)
+);
+
+CREATE TABLE Service (
+    ServiceID INT PRIMARY KEY,
+    CustomerID INT,
+    EmployeeID INT,
+    Description TEXT,
+    ServiceName VARCHAR(50),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (EmployeeID) REFERENCES Attendant(EmployeeID)
+    -- Note: ServicePrice was added later via ALTER TABLE
+);
+
+CREATE TABLE Computer (
+    PCnumber INT PRIMARY KEY,
+    Status VARCHAR(10),
+    HourlyRate DECIMAL(5, 2),
+    GamingFlag BIT,
+    Games TEXT,
+    ResearchFlag BIT,
+    ResearchPrograms TEXT
+);
+
+CREATE TABLE Use_relationship (
+    CustomerID INT,
+    PCnumber INT,
+    UsageHours INT,
+    PRIMARY KEY (CustomerID, PCnumber),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (PCnumber) REFERENCES Computer(PCnumber)
+);
+
+CREATE TABLE CustomersPhoneNumbers (
+    CustomerID INT,
+    phonenumber CHAR(10),
+    PRIMARY KEY (CustomerID, phonenumber), -- Assuming a customer can have multiple unique numbers
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+                    </pre>
+                </div>
+
+                <button class="accordion-button" onclick="toggleAccordion(this)">SQL: Data Insertion</button>
+                <div class="accordion-content">
+                    <h3>SQL: Data Insertion</h3>
+                    <p>Sample data is inserted into the tables to populate the database for testing and demonstration.</p>
+                    <pre>
+INSERT INTO Customer (CustomerID, Username, Firstname, Lastname, Email, Hours) VALUES
+(1, 'ahmad123', 'Ahmad', 'Al-Najjar', 'ahmad.najjar@gmail.com', 15),
+(2, 'sara_90', 'Sara', 'Abu Khalil', 'sara.khalil@hotmail.com', 10),
+(3, 'mohashary', 'Mohammad', 'Alashary', 'mshry@outlook.com', 0),
+(4, 'omar_jo', 'Omar', 'Haddad', 'omar.haddad@yahoo.com', 8);
+
+INSERT INTO Registrar (EmployeeID, Firstname, Lastname, BirthDate, Address, Salary, Communication_Skills) VALUES
+(1, 'Khaled', 'Al-Farsi', '1985-03-12', 'Jabal Amman', 800.00, 'Excellent Communication'),
+(2, 'Leila', 'Saadeh', '1990-11-05', 'Wadi Alsir', 750.00, 'Strong Organizational Skills'),
+(3, 'Khaleel', 'Zain', '1995-09-27', 'Jubaiha', 600.00, 'Good problem solver');
+
+INSERT INTO Manager (EmployeeID, Firstname, Lastname, BirthDate, Address, Salary, Experience) VALUES
+(4, 'Fadi', 'Haddad', '1985-01-15', 'Zarqa, New Zarqa', 1000.00, 15),
+(5, 'Nadia', 'Qassem', '1987-07-22', 'Swaifiah', 950.00, 12);
+
+INSERT INTO Attendant (EmployeeID, Firstname, Lastname, BirthDate, Address, Salary, Cooking_Degree) VALUES
+(6, 'Alaa', 'Majali', '1992-04-30', 'Sowaileh', 600.00, 'cooking diploma'),
+(7, 'Rami', 'Salameh', '1995-12-11', 'Abu nsair', 580.00, 'barista course');
+
+-- Example Payment Data (can be expanded for chart)
+INSERT INTO Payment (PaymentID, CustomerID, EmployeeID, PaymentMethod, AmountPaid, PaymentDate) VALUES
+(1, 1, 1, 'CASH', 35.00, '2025-05-15'),
+(2, 2, 1, 'CARD', 12.00, '2025-05-16'),
+(3, 3, 2, 'CASH', 4.50, '2025-05-17'),
+(4, 1, 1, 'CARD', 50.00, '2025-05-18'); 
+                    </pre>
+                </div>
+                
+                <button class="accordion-button" onclick="toggleAccordion(this)">SQL: Some Updates & Corrections</button>
+                <div class="accordion-content">
+                    <h3>SQL: Some Updates & Corrections</h3>
+                    <p>During development, it's common to encounter issues or missing elements. This section shows how the schema was updated.</p>
+                    <h4>Adding Missing Columns</h4>
+                    <p>Initially, the <code>ServicePrice</code> column was forgotten in the <code>Service</code> table. It was added using <code>ALTER TABLE</code>.</p>
+                    <pre>
+ALTER TABLE Service
+ADD ServicePrice INT NOT NULL DEFAULT 1; 
+-- The report mentions setting it as INT first, then correcting.
+                    </pre>
+                    <h4>Correcting Data Types</h4>
+                    <p>The <code>ServicePrice</code> column was initially added as an integer, which is not ideal for currency. It was corrected to <code>DECIMAL</code>.</p>
+                    <pre>
+ALTER TABLE Service
+ALTER COLUMN ServicePrice DECIMAL(4,2) NOT NULL;
+                    </pre>
+                    <h4>Updating Data</h4>
+                    <p>Example of updating a service price after the column corrections.</p>
+                    <pre>
+UPDATE Service
+SET ServicePrice = 1.50 
+WHERE ServiceID = 2; -- Assuming ServiceID 2 exists
+                    </pre>
+                </div>
+
+                <button class="accordion-button" onclick="toggleAccordion(this)">SQL: Complex Queries</button>
+                <div class="accordion-content">
+                    <h3>SQL: Complex Queries</h3>
+                    <p>This part demonstrates advanced SQL features like triggers for automated actions and complex queries for data analysis.</p>
+
+                    <h4>Payment Limit Trigger</h4>
+                    <p>This trigger prevents a customer's total payments from exceeding 10,000. If an insert or update causes the sum of payments for any customer to go over this limit, the transaction is rolled back.</p>
+                    <pre>
+CREATE TRIGGER trg_PaymentLimit
+ON Payment
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    IF EXISTS (
+        SELECT CustomerID
+        FROM Payment
+        GROUP BY CustomerID
+        HAVING SUM(AmountPaid) > 10000
+    )
+    BEGIN
+        PRINT 'Transaction rolled back: Customer payment limit exceeded (10,000).';
+        ROLLBACK TRANSACTION;
+    END
+END;
+                    </pre>
+                    <p><strong>Example Scenario:</strong> If Customer ID 3 has already paid 4.5 dinars and attempts to make a new payment of 9,996 dinars, this trigger would block the transaction as the total (10000.5) would exceed 10,000.</p>
+
+                    <h4>Feedback Status Trigger</h4>
+                    <p>This trigger automatically sets the status of a feedback entry to "Resolved" if the feedback content contains the word "issue". This is an <code>INSTEAD OF</code> trigger, meaning it replaces the default insert/update action for the Feedback table.</p>
+                    <pre>
+CREATE TRIGGER SetFeedbackResolved
+ON Feedback
+INSTEAD OF INSERT, UPDATE 
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO Feedback (feedbackID, customerID, EmployeeID, Content, Status)
+    SELECT
+        i.feedbackID,
+        i.customerID,
+        i.EmployeeID,
+        i.Content,
+        CASE
+            WHEN i.Content LIKE '%issue%' THEN 'Resolved'
+            ELSE i.Status -- Or a default status like 'Open' if i.Status is null on insert
+        END
+    FROM inserted i;
+END;
+                    </pre>
+                     <p><strong>Example Scenario:</strong> If a customer submits feedback like "The internet connection had an issue", its status will automatically be set to 'Resolved'.</p>
+
+                    <h4>Customers with Multiple Payments</h4>
+                    <p>This query identifies customers who have made more than one payment and calculates the total sum of their payments.</p>
+                    <pre>
+SELECT CustomerID, COUNT(*) as NumberOfPayments, SUM(AmountPaid) as TotalPaid
+FROM Payment
+GROUP BY CustomerID
+HAVING COUNT(*) > 1;
+                    </pre>
+
+                    <h4>Customer Payments on Specific Dates</h4>
+                    <p>This query joins the <code>Customer</code> and <code>Payment</code> tables to display information about customers who made payments on a particular date.</p>
+                    <pre>
+SELECT C.CustomerID, C.UserName, P.PaymentDate, P.AmountPaid
+FROM Customer AS C 
+JOIN Payment AS P ON C.CustomerID = P.CustomerID
+WHERE P.PaymentDate = '2025-05-16'; -- Example Date
+                    </pre>
+
+                    <h4>Payments Greater Than Average</h4>
+                    <p>This query calculates the average of all individual payment amounts and then lists customers whose total payments exceed this average. Each customer appears once with their total payment sum.</p>
+                    <pre>
+SELECT CustomerID, SUM(AmountPaid) as totalPayment
+FROM Payment
+GROUP BY CustomerID
+HAVING SUM(AmountPaid) > (SELECT AVG(AmountPaid) FROM Payment);
+                    </pre>
+                    <p>Below is an illustrative chart using sample payment data. The horizontal line represents the average of individual transaction amounts. Bars show the total payment by each customer.</p>
+                    <div class="chart-container">
+                        <canvas id="paymentsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="normalization" class="tab-content">
+            <h2>Normalization</h2>
+            <p>Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity. This section outlines how the database design for the Internet Cafe Management System adheres to various normal forms. This ensures that the database is efficient, avoids data anomalies, and provides a solid foundation for the application.</p>
+            
+            <h3>1st Normal Form (1NF)</h3>
+            <p>Ensures that all attributes contain atomic (indivisible) values and that there are no repeating groups.</p>
+            <ul>
+                <li><strong>Multi-valued attributes:</strong> The <code>customer phone number</code> was identified as potentially multi-valued (a customer might have more than one phone number). This is handled by creating a separate table: <code>CustomersPhoneNumbers (CustomerID, PhoneNumber)</code>, where each row stores a single phone number for a customer. This ensures each cell holds a single value.</li>
+                <li><strong>Composite attributes:</strong> Attributes like <code>Employee Name</code> and <code>Customer Name</code> were decomposed into <code>Firstname</code> and <code>Lastname</code>. This makes each part of the name atomic and individually accessible.</li>
+            </ul>
+
+            <h3>2nd Normal Form (2NF)</h3>
+            <p>Requires that the table is in 1NF and that all non-key attributes are fully functionally dependent on the entire primary key. This is mainly relevant for tables with composite primary keys.</p>
+            <ul>
+                <li>The project report states: "We have not faced any composite key" in the context of partial dependencies. However, tables like <code>Use_relationship (CustomerID, PCnumber)</code> and <code>CustomersPhoneNumbers (CustomerID, phonenumber)</code> do have composite primary keys.
+                In <code>Use_relationship</code>, `UsageHours` is dependent on both `CustomerID` and `PCnumber` (a specific customer's usage of a specific PC).
+                In <code>CustomersPhoneNumbers</code>, there are no non-key attributes, so it trivially satisfies 2NF.
+                For other tables with single-column primary keys, 2NF is inherently satisfied if they are in 1NF.
+                </li>
+            </ul>
+
+            <h3>3rd Normal Form (3NF)</h3>
+            <p>Requires that the table is in 2NF and that there are no transitive dependencies (i.e., non-key attributes are not dependent on other non-key attributes).</p>
+            <ul>
+                <li>The project report states: "We did not face any non-prime attribute transitively dependent on a primary key." This suggests that efforts were made to ensure that all non-key attributes depend directly on the primary key and not on other non-key attributes. For example, in the <code>Customer</code> table, attributes like <code>Username</code> and <code>Email</code> depend directly on <code>CustomerID</code>.</li>
+            </ul>
+
+            <h3>Boyce-Codd Normal Form (BCNF)</h3>
+            <p>A stricter version of 3NF. For every non-trivial functional dependency X → Y, X must be a superkey. </p>
+            <ul>
+                <li>The project report states: "We have not faced any primary key holds any non-primary key." (This phrasing is a bit unclear, but likely means that determinants of non-trivial functional dependencies are candidate keys). Assuming the analysis for 3NF was thorough and no such dependencies were overlooked, the design aims for BCNF.</li>
+            </ul>
+             <p>By following these normalization principles, the database aims to be robust, minimize redundancy, and prevent data update anomalies.</p>
+        </div>
+
+        <div id="team" class="tab-content">
+            <h2>Team & Credits</h2>
+            <p>This project, the "Internet Cafe Management System," was developed under the guidance of academic supervision and through the collaborative efforts of a dedicated student team.</p>
+            
+            <h3>كلية العلوم الحاسوبية والمعلوماتية</h3>
+            <p>Amman Arab University</p>
+            
+            <h3>Supervised By:</h3>
+            <p>Dr. Layal Al Zeben</p>
+
+            <h3>Designed By:</h3>
+            <ul>
+                <li>Abdel-Rahman Zahran</li>
+                <li>Mohammad Alashary</li>
+                <li>Mustafa Yousef</li>
+            </ul>
+            <p>This interactive report was generated based on their project documentation.</p>
+        </div>
+    </main>
+
+    <footer class="bg-gray-700 text-white text-center p-4 mt-8">
+        <p>&copy; 2025 Internet Cafe Management System Interactive Report. All rights reserved based on original project.</p>
+    </footer>
+
+    <script>
+        function showTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        function toggleAccordion(buttonElement) {
+            const content = buttonElement.nextElementSibling;
+            buttonElement.classList.toggle('active');
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                content.style.paddingTop = '0';
+                content.style.paddingBottom = '0';
+                 setTimeout(() => { content.style.display = "none"; }, 300);
+
+            } else {
+                content.style.display = "block";
+                content.style.paddingTop = '1rem';
+                content.style.paddingBottom = '1rem';
+                content.style.maxHeight = content.scrollHeight + "px";
+
+            }
+        }
+        
+        // Accordion styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .accordion-button {
+                background-color: #edf2f7; /* Light gray */
+                color: #2d3748; /* Dark gray text */
+                cursor: pointer;
+                padding: 1rem;
+                width: 100%;
+                text-align: left;
+                border: none;
+                outline: none;
+                transition: background-color 0.3s ease;
+                font-weight: 600;
+                border-radius: 0.25rem;
+                margin-top: 0.5rem;
+            }
+            .accordion-button:hover, .accordion-button.active {
+                background-color: #e2e8f0; /* Slightly darker gray */
+            }
+            .accordion-button.active {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+            .accordion-content {
+                display: none;
+                padding: 0 1rem;
+                background-color: white;
+                overflow: hidden;
+                transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+                max-height: 0;
+                border: 1px solid #e2e8f0;
+                border-top: none;
+                border-bottom-left-radius: 0.25rem;
+                border-bottom-right-radius: 0.25rem;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Chart.js: Payments Greater Than Average
+        const paymentData = [
+            { customerId: 1, amountPaid: 35.00 },
+            { customerId: 2, amountPaid: 12.00 },
+            { customerId: 3, amountPaid: 4.50 },
+            { customerId: 1, amountPaid: 50.00 }, // Customer 1, second payment
+            { customerId: 4, amountPaid: 80.00 },
+            { customerId: 2, amountPaid: 20.00 }  // Customer 2, second payment
+        ];
+
+        // Calculate total payments per customer
+        const customerTotals = paymentData.reduce((acc, payment) => {
+            acc[payment.customerId] = (acc[payment.customerId] || 0) + payment.amountPaid;
+            return acc;
+        }, {});
+
+        // Calculate average of *individual* transaction amounts
+        const averagePayment = paymentData.reduce((sum, p) => sum + p.amountPaid, 0) / paymentData.length;
+        
+        const chartLabels = Object.keys(customerTotals).map(id => `Customer ${id}`);
+        const chartDataValues = Object.values(customerTotals);
+
+        const ctx = document.getElementById('paymentsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Total Payment per Customer',
+                    data: chartDataValues,
+                    backgroundColor: chartDataValues.map(val => val > averagePayment ? 'rgba(79, 209, 197, 0.6)' : 'rgba(255, 159, 64, 0.6)'), // Teal if > avg, Orange if <= avg
+                    borderColor: chartDataValues.map(val => val > averagePayment ? 'rgba(79, 209, 197, 1)' : 'rgba(255, 159, 64, 1)'),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Amount Paid (Dinars)'
+                        }
+                    },
+                    x: {
+                         title: {
+                            display: true,
+                            text: 'Customer'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(context.parsed.y); // Assuming JOD
+                                }
+                                return label;
+                            }
+                        }
+                    },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                yMin: averagePayment,
+                                yMax: averagePayment,
+                                borderColor: 'rgb(255, 99, 132)',
+                                borderWidth: 2,
+                                label: {
+                                    content: 'Avg. Transaction: ' + averagePayment.toFixed(2),
+                                    enabled: true,
+                                    position: 'end',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                                }
+                            }
+                        }
+                    }
+                },
+                 // Wrap long labels (not strictly needed for "Customer X" but good practice)
+                scales: {
+                    x: {
+                        ticks: {
+                            callback: function(value, index, values) {
+                                const label = this.getLabelForValue(value);
+                                if (label.length > 16) {
+                                    return label.substring(0, 16) + '...';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        // Manually trigger the first tab content to be visible.
+        // document.addEventListener('DOMContentLoaded', () => { showTab('overview'); });
+        // The initial active class is already set in HTML.
+    </script>
+</body>
+</html>
