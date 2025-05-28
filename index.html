@@ -141,41 +141,28 @@
 
     <main class="container mx-auto p-4 sm:p-6 md:p-8">
         <div id="overview" class="tab-content active">
-            <h2>Project Overview</h2>
-            <p>This section outlines the problem statement that initiated the Internet Cafe Management System project and the proposed solution. It aims to provide context for the system's development and its intended benefits for the internet café manager.</p>
-            
-            <h3>Introduction</h3>
-            <p>An internet café manager requested assistance in building a system that is easy to work with and helps reduce paper usage. The primary goal was to streamline operations and move towards a more digital management approach.</p>
+            <h1> <strong>Project Overview</strong></h1>
+            <h2><strong>Introduction</strong></h2>
+            <p>An internet Café manager asked us to help them by building a system that is easy to work with, and they can reduce paper use.</p>
+            <br>
+            <h2><strong>Scenario</strong></h2>
+            <p>A Customer makes an account using their username, password, full name, phone number, Email and he must make Payment which will be managed by the Registrar after giving him payment method and the amount he will pay, and the payment will be saved with an ID and date. The registrar will insert the hours which customer can use computers with. Customer may order a Service which has an ID, name, description, price and which must be prepared by an Attendant. Customer start using Computer with a specific number because everyone has its hourly rate depending on its specification. Every computer may be specified for researching or gaming and everyone has a status. After finishing using the computer or a service he ordered, he may give feedback which must be solved by the Manager. The manager should write the feedback content and give it an ID and status. 
 
-            <h3>Scenario Overview</h3>
-            <p>The system manages several key entities and their interactions within the internet cafe environment:</p>
-            <ul>
-                <li><strong>Customer:</strong> Creates an account (username, password, full name, phone, email) and makes payments.</li>
-                <li><strong>Payment:</strong> Managed by a Registrar, includes method, amount, ID, and date. The registrar also allocates computer usage hours based on payment.</li>
-                <li><strong>Registrar:</strong> An employee role responsible for managing payments and customer computer time.</li>
-                <li><strong>Service:</strong> Customers can order services (e.g., snacks, drinks), which have an ID, name, description, and price. These are prepared by an Attendant.</li>
-                <li><strong>Attendant:</strong> An employee role responsible for preparing and delivering services.</li>
-                <li><strong>Computer:</strong> Customers use specific computers. Each computer has a unique number, an hourly rate based on its specifications (e.g., for research or gaming), and a status (e.g., available, in use).</li>
-                <li><strong>Feedback:</strong> After using a computer or a service, customers can provide feedback. Feedback includes an ID, content, and status (e.g., open, resolved) and is handled by a Manager.</li>
-                <li><strong>Manager:</strong> An employee role responsible for solving customer feedback and overseeing general operations.</li>
-                <li><strong>Employee:</strong> A general category for Managers, Registrars, and Attendants. All employees have an ID, full name, birth date, address, and salary, with specific qualifications for each role:
-                    <ul>
-                        <li>Manager: At least 8 years of experience in problem-solving and business management.</li>
-                        <li>Registrar: Good communication skills, preferably certified.</li>
-                        <li>Attendant: Cooking or barista degree.</li>
-                    </ul>
-                </li>
-            </ul>
+	Manager, Registrar and Attendant are all Employees with ID and registered with their full names, birth date, address and salary, but everyone has something who is specialized with. Manager should have at least 8 years of experience with solving problems and managing businesses. Registrar should have good communication skills and it is better to prove that with a certification card. Attendant should have a cooking or barista degree.
+</p>
+<br>
+<br>
             <p>This scenario forms the basis for the database design and system functionalities detailed in subsequent sections.</p>
+        <br>
         </div>
 
         <div id="dbdesign" class="tab-content">
-            <h2>Database Design</h2>
+            <h2><strong> Design</strong></h2>
             <p>This section delves into the structural design of the database. It includes insights from the Entity-Relationship Diagram (EER) and a detailed mapping to the relational schema, showing how real-world entities and their relationships are translated into database tables and columns. Understanding this design is crucial for comprehending data storage and retrieval within the system.</p>
 
             <h3>EER Diagram Insights</h3>
             <p>The EER (Enhanced Entity-Relationship) Diagram visually represents the main entities in the system and how they relate to one another. Below is the EER diagram for the Internet Cafe Management System.</p>
-            <img src="DBMS ff.jpg" alt="EER Diagram for Internet Cafe Management System" class="diagram-image" onerror="this.onerror=null; this.src='https://placehold.co/600x400/cccccc/333333?text=EER+Diagram+Placeholder';">
+            <img src="C:\Users\DELL\Desktop\New folder (2)\DBMS ff.jpg" alt="EER Diagram for Internet Cafe Management System" class="diagram-image" onerror="this.onerror=null; this.src='https://placehold.co/600x400/cccccc/333333?text=EER+Diagram+Placeholder';">
             <ul>
                 <li><strong>Entities:</strong> Customer, Employee (specialized into Manager, Registrar, Attendant), Payment, Service, Computer, Feedback.</li>
                 <li><strong>Relationships:</strong>
@@ -222,7 +209,7 @@
 
             <h3>Relational Schema (Mapping)</h3>
             <p>The EER diagram is mapped to a relational schema consisting of the following tables. This structure defines how data is organized in the SQL database. Below is the mapping from the EER to the relational schema.</p>
-            <img src="Mapping ff.png" alt="Relational Schema Mapping" class="diagram-image" onerror="this.onerror=null; this.src='https://placehold.co/600x400/cccccc/333333?text=Mapping+Diagram+Placeholder';">
+            <img src="C:\Users\DELL\Desktop\New folder (2)\Mapping ff.png" alt="Relational Schema Mapping" class="diagram-image" onerror="this.onerror=null; this.src='https://placehold.co/600x400/cccccc/333333?text=Mapping+Diagram+Placeholder';">
             <div class="grid md:grid-cols-2 gap-6">
                 <div class="table-like">
                     <strong>Customer</strong>
@@ -334,7 +321,7 @@
         </div>
 
         <div id="implementation" class="tab-content">
-            <h2>SQL Implementation</h2>
+            <h2><strong> Implementation</strong></h2>
             <p>This section showcases the SQL (Structured Query Language) aspects of the project. It includes the commands for creating the database tables, inserting initial data, making necessary updates or corrections to the schema, and examples of complex queries like triggers and aggregations that add advanced functionality to the system. These SQL snippets demonstrate the practical realization of the database design.</p>
 
             <div class="accordion">
@@ -587,17 +574,18 @@ HAVING SUM(AmountPaid) > (SELECT AVG(AmountPaid) FROM Payment);
         </div>
 
         <div id="normalization" class="tab-content">
-            <h2>Normalization</h2>
+            <h2><strong>Normalization</strong></h2>
             <p>Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity. This section outlines how the database design for the Internet Cafe Management System adheres to various normal forms. This ensures that the database is efficient, avoids data anomalies, and provides a solid foundation for the application.</p>
-            
-            <h3>1st Normal Form (1NF)</h3>
+            <br>
+            <h3><strong>1st Normal Form (1NF)</strong></h3>
             <p>Ensures that all attributes contain atomic (indivisible) values and that there are no repeating groups.</p>
             <ul>
                 <li><strong>Multi-valued attributes:</strong> The <code>customer phone number</code> was identified as potentially multi-valued (a customer might have more than one phone number). This is handled by creating a separate table: <code>CustomersPhoneNumbers (CustomerID, PhoneNumber)</code>, where each row stores a single phone number for a customer. This ensures each cell holds a single value.</li>
                 <li><strong>Composite attributes:</strong> Attributes like <code>Employee Name</code> and <code>Customer Name</code> were decomposed into <code>Firstname</code> and <code>Lastname</code>. This makes each part of the name atomic and individually accessible.</li>
             </ul>
+            <br>
 
-            <h3>2nd Normal Form (2NF)</h3>
+            <h3><strong>2nd Normal Form (2NF)</strong></h3>
             <p>Requires that the table is in 1NF and that all non-key attributes are fully functionally dependent on the entire primary key. This is mainly relevant for tables with composite primary keys.</p>
             <ul>
                 <li>The project report states: "We have not faced any composite key" in the context of partial dependencies. However, tables like <code>Use_relationship (CustomerID, PCnumber)</code> and <code>CustomersPhoneNumbers (CustomerID, phonenumber)</code> do have composite primary keys.
@@ -606,14 +594,14 @@ HAVING SUM(AmountPaid) > (SELECT AVG(AmountPaid) FROM Payment);
                 For other tables with single-column primary keys, 2NF is inherently satisfied if they are in 1NF.
                 </li>
             </ul>
-
-            <h3>3rd Normal Form (3NF)</h3>
+<br>
+            <h3><strong>3rd Normal Form (3NF)</strong></h3>
             <p>Requires that the table is in 2NF and that there are no transitive dependencies (i.e., non-key attributes are not dependent on other non-key attributes).</p>
             <ul>
                 <li>The project report states: "We did not face any non-prime attribute transitively dependent on a primary key." This suggests that efforts were made to ensure that all non-key attributes depend directly on the primary key and not on other non-key attributes. For example, in the <code>Customer</code> table, attributes like <code>Username</code> and <code>Email</code> depend directly on <code>CustomerID</code>.</li>
             </ul>
-
-            <h3>Boyce-Codd Normal Form (BCNF)</h3>
+<br>
+            <h3><strong>Boyce-Codd Normal Form (BCNF)</strong></h3>
             <p>A stricter version of 3NF. For every non-trivial functional dependency X → Y, X must be a superkey. </p>
             <ul>
                 <li>The project report states: "We have not faced any primary key holds any non-primary key." (This phrasing is a bit unclear, but likely means that determinants of non-trivial functional dependencies are candidate keys). Assuming the analysis for 3NF was thorough and no such dependencies were overlooked, the design aims for BCNF.</li>
@@ -622,22 +610,21 @@ HAVING SUM(AmountPaid) > (SELECT AVG(AmountPaid) FROM Payment);
         </div>
 
         <div id="team" class="tab-content">
-            <h2>Team & Credits</h2>
+            <h2><Strong>Team & Credits</Strong></h2>
+            <img src="C:\Users\DELL\Desktop\New folder (2)\aau logo 100521.png" alt="AAU Logo" class="mx-auto block h-32 mb-4" >
+            <h3 class="text-3xl font-bold text-center">Faculty of Information Technology</h3>
+            <p class="text-3xl font-bold text-center">Amman Arab University</p>
+            <br>
             <p>This project, the "Internet Cafe Management System," was developed under the guidance of academic supervision and through the collaborative efforts of a dedicated student team.</p>
-            
-            <h3>كلية العلوم الحاسوبية والمعلوماتية</h3>
-            <p>Amman Arab University</p>
-            
-            <h3>Supervised By:</h3>
-            <p>Dr. Layal Al Zeben</p>
-
+            <br>
+            <h3 class="text-3xl font-bold text-center">Supervised By: Dr. Layal Al Zeben</h3>
+<br>
             <h3>Designed By:</h3>
             <ul>
-                <li>Abdel-Rahman Zahran</li>
-                <li>Mohammad Alashary</li>
-                <li>Mustafa Yousef</li>
+                <li class="text-3xl font-bold text-center">Abdel-Rahman Zahran</li>
+                <li class="text-3xl font-bold text-center">Mohammad Alashary</li>
+                <li class="text-3xl font-bold text-center">Mustafa Yousef</li>
             </ul>
-            <p>This interactive report was generated based on their project documentation.</p>
         </div>
     </main>
 
@@ -722,9 +709,8 @@ HAVING SUM(AmountPaid) > (SELECT AVG(AmountPaid) FROM Payment);
             { customerId: 1, amountPaid: 35.00 },
             { customerId: 2, amountPaid: 12.00 },
             { customerId: 3, amountPaid: 4.50 },
-            { customerId: 1, amountPaid: 50.00 }, // Customer 1, second payment
-            { customerId: 4, amountPaid: 80.00 },
-            { customerId: 2, amountPaid: 20.00 }  // Customer 2, second payment
+            { customerId: 3, amountPaid: 27.00 }, // Customer 1, second payment
+            { customerId: 4, amountPaid: 22.50 }
         ];
 
         // Calculate total payments per customer
